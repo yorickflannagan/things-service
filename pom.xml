@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<project	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+			xmlns="http://maven.apache.org/POM/4.0.0"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.crypthing</groupId>
+	<artifactId>things-service</artifactId>
+	<version>1.0.0</version>
+	<name>Things Service</name>
+	<description>Extends Things to support Quarkus</description>
+	<inceptionYear>2020</inceptionYear>
+	<organization>
+		<name>Yakoana Services</name>
+	</organization>
+	<url>http://www.yakoana.com.br</url>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License</name>
+			<url>https://www.gnu.org/licenses/lgpl.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Diego von Sohsten</name>
+			<email>diego.sohsten@gmail.com</email>
+			<organization>Yakoana</organization>
+			<organizationUrl>http://www.yakoana.com.br</organizationUrl>
+		</developer>
+		<developer>
+			<name>Marco Gutierrez</name>
+			<email>yorick.flannagan@gmail.com</email>
+			<organization>Yakoana</organization>
+			<organizationUrl>http://www.yakoana.com.br</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:https://bitbucket.org/yakoana/things-service.git</connection>
+		<tag>HEAD</tag>
+		<url>https://bitbucket.org/yakoana/things-service/src</url>
+	</scm>
+
+	<properties>
+		<surefire-plugin.version>2.22.1</surefire-plugin.version>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<quarkus.platform.version>1.10.5.Final</quarkus.platform.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compiler.parameters>true</maven.compiler.parameters>
+		<quarkus-plugin.version>1.10.5.Final</quarkus-plugin.version>
+		<compiler-plugin.version>3.8.1</compiler-plugin.version>
+		<quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+	</properties>
+
+	<dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>${quarkus.platform.group-id}</groupId>
+			<artifactId>${quarkus.platform.artifact-id}</artifactId>
+			<version>${quarkus.platform.version}</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+	</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.crypthing</groupId>
+			<artifactId>things</artifactId>
+			<version>2.5.12</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20200518</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-arc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-resteasy</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+	<plugins>
+		<plugin>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-maven-plugin</artifactId>
+			<version>${quarkus-plugin.version}</version>
+			<extensions>true</extensions>
+			<executions>
+				<execution>
+				<goals>
+					<goal>build</goal>
+					<goal>generate-code</goal>
+					<goal>generate-code-tests</goal>
+				</goals>
+				</execution>
+			</executions>
+			<configuration>
+				<jvmArgs>-Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.rmi.port=8001 -Dcom.sun.management.jmxremote.port=8001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false</jvmArgs>
+			</configuration>
+		</plugin>
+		<plugin>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>${compiler-plugin.version}</version>
+			</plugin>
+			<plugin>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>${surefire-plugin.version}</version>
+			<configuration>
+				<systemPropertyVariables>
+				<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+				<maven.home>${maven.home}</maven.home>
+				</systemPropertyVariables>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<version>3.2.0</version>
+			<configuration>
+				<charset>UTF-8</charset>
+				<doctitle>${project.name} ${project.version}</doctitle>
+				<docencoding>UTF-8</docencoding>
+				<encoding>UTF-8</encoding>
+				<locale>pt_BR</locale>
+				<show>public</show>
+				<windowtitle>${project.name} ${project.version}</windowtitle>
+			</configuration>
+		</plugin>
+</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>native</id>
+			<activation>
+			<property>
+				<name>native</name>
+			</property>
+			</activation>
+			<build>
+			<plugins>
+				<plugin>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>${surefire-plugin.version}</version>
+					<executions>
+						<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<systemPropertyVariables>
+							<native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+							<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+							<maven.home>${maven.home}</maven.home>
+							</systemPropertyVariables>
+						</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+			</build>
+			<properties>
+				<quarkus.package.type>native</quarkus.package.type>
+			</properties>
+		</profile>
+	</profiles>
+</project>
