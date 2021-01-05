@@ -1,13 +1,13 @@
 /**
- * Implementação de logging remoto e monitoramento.
+ * Implementação de logging remoto e monitoramento. Veja o seguinte exemplo:
  * <pre>
  * // Declare o serviço (um singleton)
- * @Inject
+ * {@literal @}Inject
  * ThingsService service;
  * 
  * // Onde seja necessário utilizá-lo, faça:
- * @GET
- * @Produces(MediaType.TEXT_PLAIN)
+ * {@literal @}GET
+ * {@literal @}Produces(MediaType.TEXT_PLAIN)
  * public Response getSomething()
  * {
  * 	Response.Status status;

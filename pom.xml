@@ -103,38 +103,6 @@
 	<build>
 	<plugins>
 		<plugin>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-maven-plugin</artifactId>
-			<version>${quarkus-plugin.version}</version>
-			<extensions>true</extensions>
-			<executions>
-				<execution>
-				<goals>
-					<goal>build</goal>
-					<goal>generate-code</goal>
-					<goal>generate-code-tests</goal>
-				</goals>
-				</execution>
-			</executions>
-			<configuration>
-				<jvmArgs>-Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.rmi.port=8001 -Dcom.sun.management.jmxremote.port=8001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false</jvmArgs>
-			</configuration>
-		</plugin>
-		<plugin>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>${compiler-plugin.version}</version>
-			</plugin>
-			<plugin>
-			<artifactId>maven-surefire-plugin</artifactId>
-			<version>${surefire-plugin.version}</version>
-			<configuration>
-				<systemPropertyVariables>
-				<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-				<maven.home>${maven.home}</maven.home>
-				</systemPropertyVariables>
-			</configuration>
-		</plugin>
-		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-javadoc-plugin</artifactId>
 			<version>3.2.0</version>
@@ -146,45 +114,105 @@
 				<locale>pt_BR</locale>
 				<show>public</show>
 				<windowtitle>${project.name} ${project.version}</windowtitle>
+				<detectLinks>true</detectLinks>
 			</configuration>
 		</plugin>
-</plugins>
+	</plugins>
 	</build>
 
 	<profiles>
 		<profile>
-			<id>native</id>
+			<id>prod</id>
 			<activation>
-			<property>
-				<name>native</name>
-			</property>
+				<property>
+					<name>prod</name>
+				</property>
 			</activation>
 			<build>
 			<plugins>
 				<plugin>
-					<artifactId>maven-failsafe-plugin</artifactId>
-					<version>${surefire-plugin.version}</version>
+					<groupId>io.quarkus</groupId>
+					<artifactId>quarkus-maven-plugin</artifactId>
+					<version>${quarkus-plugin.version}</version>
+					<extensions>true</extensions>
 					<executions>
 						<execution>
 						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
+							<goal>build</goal>
+							<goal>generate-code</goal>
 						</goals>
-						<configuration>
-							<systemPropertyVariables>
-							<native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-							<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-							<maven.home>${maven.home}</maven.home>
-							</systemPropertyVariables>
-						</configuration>
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${compiler-plugin.version}</version>
+					<configuration>
+						<excludes>
+							<exclude>**/QuarkusService.java</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+					<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${surefire-plugin.version}</version>
+					<configuration>
+						<systemPropertyVariables>
+							<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+							<maven.home>${maven.home}</maven.home>
+						</systemPropertyVariables>
+						<skipTests>true</skipTests>
+					</configuration>
+				</plugin>
 			</plugins>
 			</build>
-			<properties>
-				<quarkus.package.type>native</quarkus.package.type>
-			</properties>
+		</profile>
+		
+		<profile>
+			<id>debug</id>
+			<activation>
+				<property>
+					<name>debug</name>
+				</property>
+			</activation>
+			<build>
+			<plugins>
+				<plugin>
+					<groupId>io.quarkus</groupId>
+					<artifactId>quarkus-maven-plugin</artifactId>
+					<version>${quarkus-plugin.version}</version>
+					<extensions>true</extensions>
+					<executions>
+						<execution>
+						<goals>
+							<goal>build</goal>
+							<goal>generate-code</goal>
+							<goal>generate-code-tests</goal>
+						</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<jvmArgs>-Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.rmi.port=8001 -Dcom.sun.management.jmxremote.port=8001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false</jvmArgs>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${compiler-plugin.version}</version>
+				</plugin>
+					<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${surefire-plugin.version}</version>
+					<configuration>
+						<systemPropertyVariables>
+							<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+							<maven.home>${maven.home}</maven.home>
+						</systemPropertyVariables>
+					</configuration>
+				</plugin>
+			</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>
