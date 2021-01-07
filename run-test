@@ -2,7 +2,9 @@
 JMX_HOST=127.0.0.1
 JMX_PORT=8001
 HTTP_PORT=8081
+APP_NAME=Quarkus-Test
 export JMX_AUTH="-Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
 export JMX="-Djava.rmi.server.hostname=$JMX_HOST -Dcom.sun.management.jmxremote.port=$JMX_PORT"
 export QUARKUS_PORT="-Dquarkus.http.port=$HTTP_PORT"
-$JAVA_HOME/bin/java $JMX $JMX_AUTH $QUARKUS_PORT -jar target/things-service-1.0.0-runner.jar
+export QUARKUS_APP="-Dthing.server.name=$APP_NAME"
+$JAVA_HOME/bin/java $JMX $JMX_AUTH $QUARKUS_PORT $QUARKUS_APP -jar target/things-service-1.0.0-runner.jar
