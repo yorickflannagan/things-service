@@ -124,9 +124,7 @@
 		<profile>
 			<id>prod</id>
 			<activation>
-				<property>
-					<name>prod</name>
-				</property>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 			<build>
 			<plugins>
@@ -154,7 +152,7 @@
 						</excludes>
 					</configuration>
 				</plugin>
-					<plugin>
+				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${surefire-plugin.version}</version>
 					<configuration>
@@ -192,9 +190,6 @@
 						</goals>
 						</execution>
 					</executions>
-					<configuration>
-						<jvmArgs>-Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.rmi.port=8001 -Dcom.sun.management.jmxremote.port=8001 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false</jvmArgs>
-					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -209,6 +204,13 @@
 							<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
 							<maven.home>${maven.home}</maven.home>
 						</systemPropertyVariables>
+						<argLine>
+							-Dcom.sun.management.jmxremote.authenticate=false
+							-Dcom.sun.management.jmxremote.ssl=false
+							-Djava.rmi.server.hostname=127.0.0.1
+							-Dcom.sun.management.jmxremote.port=801${surefire.forkNumber}
+							-Dthing.server.name=Quarkus-Test
+						</argLine>
 					</configuration>
 				</plugin>
 			</plugins>
