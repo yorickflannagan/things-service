@@ -16,6 +16,7 @@ import org.crypthing.things.snmp.EncodableString;
 import org.crypthing.things.snmp.LifecycleEvent;
 import org.crypthing.things.snmp.ProcessingEventListener;
 import org.crypthing.things.snmp.SNMPBridge;
+import org.crypthing.things.snmp.SignalBean;
 import org.crypthing.things.snmp.LifecycleEvent.LifecycleEventType;
 import org.crypthing.things.snmp.ProcessingEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -98,6 +99,7 @@ public class ThingsService implements ThingsServiceMBean, ProcessingEventListene
 			final Thread daemon = new Thread(new Heartbeat());
 			daemon.setDaemon(true);
 			daemon.start();
+			bridge.notify(new LifecycleEvent(LifecycleEventType.start, new SignalBean(endpoint, "Service started").encode()));
 		}
 		catch (final Throwable e) { throw new ServiceInitException(e); }
 	}
@@ -107,6 +109,7 @@ public class ThingsService implements ThingsServiceMBean, ProcessingEventListene
 	@PreDestroy
 	public void stop()
 	{
+		bridge.notify(new LifecycleEvent(LifecycleEventType.stop, new SignalBean(endpoint, "Service stoped").encode()));
 		heartbeat = 0;
 		try { ManagementFactory.getPlatformMBeanServer().unregisterMBean(serviceName); }
 		catch (final MBeanRegistrationException | InstanceNotFoundException swallowed) {}
